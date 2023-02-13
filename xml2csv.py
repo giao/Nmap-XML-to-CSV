@@ -157,15 +157,14 @@ def parse_to_csv(data):
             exit()
         csv_writer = csv.writer(csv_file)
         print('\n[+] {} exists. Appending to file!\n'.format(csv_name))
-    for item in data:
+    for item in sorted(data, key=lambda ligne: tuple(map(ligne[0].split('.')))):
         csv_writer.writerow(item)
     csv_file.close()        
 
 def list_ip_addresses(data):
     """Parses the input data to return only the IP address information"""
     ip_list = [item[0] for item in data]
-    sorted_set = sorted(set(ip_list))
-    addr_list = [ip for ip in sorted_set]
+    addr_list = sorted(ip_list, key=lambda x: tuple(map(int, x.split('.'))))
     return addr_list
 
 def print_web_ports(data):
@@ -239,7 +238,8 @@ def print_filtered_port(data, filtered_port):
 
 def print_data(data):
     """Prints the data to the terminal."""
-    for item in data:
+    sorted_data = sorted(data, key=lambda ligne: tuple(map(int,ligne[0].split('.'))))
+    for item in sorted_data:
         print(' '.join(item))
 
 def main():
