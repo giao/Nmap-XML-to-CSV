@@ -40,6 +40,18 @@ def get_host_data(root):
         except IndexError:
             host_name = ''
         
+        # Get MAC info
+        if len(host.findall('address')) > 1:
+            mac_element = host.findall('address')[1]
+            mac_address = mac_element.attrib['addr']
+            if 'vendor' in mac_element.attrib:
+                mac_vendor = mac_element.attrib['vendor']
+            else:
+                mac_vendor = ''
+        else:
+            mac_address = ''
+            mac_vendor = ''
+
         # If we only want the IP addresses from the scan, stop here
         if args.ip_addresses:
             addr_info.extend((ip_address, host_name))
@@ -90,7 +102,7 @@ def get_host_data(root):
                     script_output = ''
 
                 # Create a list of the port data
-                port_data.extend((ip_address, host_name, os_name,
+                port_data.extend((ip_address, host_name, mac_address, mac_vendor, os_name,
                                   proto, port_id, service, product, 
                                   servicefp, script_id, script_output))
                 
@@ -99,7 +111,7 @@ def get_host_data(root):
 
         # If no port information, just create a list of host information
         except IndexError:
-            addr_info.extend((ip_address, host_name))
+            addr_info.extend((ip_address, host_name, mac_address, mac_vendor))
             host_data.append(addr_info)
     return host_data
 
@@ -124,7 +136,7 @@ def parse_to_csv(data):
         csv_file = open(csv_name, 'w', newline='')
         csv_writer = csv.writer(csv_file)
         top_row = [
-            'IP', 'Host', 'OS', 'Proto', 'Port',
+            'IP', 'Host', 'MAC addr', 'MAC Vendor', 'OS', 'Proto', 'Port',
             'Service', 'Product', 'Service FP',
             'NSE Script ID', 'NSE Script Output', 'Notes'
         ]
