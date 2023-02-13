@@ -157,7 +157,7 @@ def parse_to_csv(data):
             exit()
         csv_writer = csv.writer(csv_file)
         print('\n[+] {} exists. Appending to file!\n'.format(csv_name))
-    for item in sorted(data, key=lambda ligne: tuple(map(ligne[0].split('.')))):
+    for item in sorted(data, key=lambda ligne: tuple(map(int, ligne[0].split('.')))):
         csv_writer.writerow(item)
     csv_file.close()        
 
